@@ -1,16 +1,78 @@
-var { Component, Container } = scene
+var { Component, Container, Rect } = scene
 
-export default class Tab extends Container {
+export default class Tab extends Rect {
+
+  get reference() {
+    var { reference } = this.model
+    if(!reference)
+      return null
+
+    return this.root.findById(reference)
+  }
+
+  get labelHeight() {
+    var components = this.reference.components.length
+    var height = this.model.height
+
+    return (components > 0 && height / components) || height
+  }
+
+  get activeIndex() {
+    return this.get('activeIndex')
+  }
+
+  set activeIndex(index) {
+
+
+    this.set('activeIndex', index)
+    if(this.reference)
+      this.reference.activeIndex = index
+  }
 
   _draw(context) {
 
-    var { tabIndex } = this.model
+    super._draw(context)
 
+    var {
+      tabIndex,
+      left,
+      top,
+      width,
+      height,
+      fillStyle,
+      strokeStyle,
+      lineWidth
+    } = this.model
 
+    var reference = this.reference
 
+    if(reference) {
+      let components = reference.components
+      let label_height = this.labelHeight
+
+      for(let i = 0;i < components.length;i++) {
+
+        context.beginPath();
+
+        context.rect(left, top + i * label_height,
+          width, label_height)
+
+        context.lineWidth = lineWidth
+        context.strokeStyle = strokeStyle
+        context.fillStyle = fillStyle
+
+        context.stroke()
+        context.fill()
+
+        context.closePath();
+      }
+    } else {
+      // TODO reference 가 잘못되거나 안되어있다는 경고 의미로 뭔가 그려라..
+    }
   }
 
   onmouseup(e) {
+
     var down_point = this.__down_point
     delete this.__down_point
 
@@ -27,31 +89,12 @@ export default class Tab extends Container {
     var x = point.x - left
     var y = point.y - top
 
-    if(x > 0)
-      return
+    var label_height = this.labelHeight
 
-    y /= LABEL_HEIGHT
+    y /= label_height
     y = Math.floor(y)
 
-    if(!this.layoutConfig)
-      this.layoutConfig = {}
-
-    if(y > this.components.length)
-      return
-
-    /* 생성 버튼이 클릭되면, 새로운 floor를 추가한다. */
-    if(y == this.components.length) {
-      this.add(Model.compile({
-        type: 'floor',
-        width: 100,
-        height: 100
-      }))
-    }
-
-    var config = Object.assign({}, this.layoutConfig)
-
-    config.activeIndex = y
-    this.set('layoutConfig', config)
+    this.activeIndex = y
   }
 
   onmousedown(e) {

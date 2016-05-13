@@ -16,6 +16,7 @@ subject to an additional IP rights grant found at http://polymer.github.io/PATEN
     <script src="../../webcomponentsjs/webcomponents-lite.min.js"></script>
 
     <link rel="import" href="../../things-scene-viewer/things-scene-viewer.html">
+    <link rel="import" href="../../things-scene-indoor-map/things-scene-indoor-map.html">
     <link rel="import" href="../../things-scene-modeler/things-scene-properties.html">
 
     <script src="../things-scene-tab.js"></script>
@@ -73,8 +74,19 @@ subject to an additional IP rights grant found at http://polymer.github.io/PATEN
           width: 500,
           height: 500,
           components: [{
-            type: 'indoor-map',
+            type: 'tab',
+            reference: 'indoor-map',
             left: 100,
+            top: 100,
+            width: 100,
+            height: 400,
+            lineWidth: 10,
+            fillStyle: 'red',
+            strokeStyle: 'green'
+          }, {
+            type: 'indoor-map',
+            id: 'indoor-map',
+            left: 250,
             top: 100,
             width: 600,
             height: 400,

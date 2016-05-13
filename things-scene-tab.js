@@ -25,6 +25,8 @@ Object.defineProperty(exports, "__esModule", {
 
 var _createClass = function () { function defineProperties(target, props) { for (var i = 0; i < props.length; i++) { var descriptor = props[i]; descriptor.enumerable = descriptor.enumerable || false; descriptor.configurable = true; if ("value" in descriptor) descriptor.writable = true; Object.defineProperty(target, descriptor.key, descriptor); } } return function (Constructor, protoProps, staticProps) { if (protoProps) defineProperties(Constructor.prototype, protoProps); if (staticProps) defineProperties(Constructor, staticProps); return Constructor; }; }();
 
+var _get = function get(object, property, receiver) { if (object === null) object = Function.prototype; var desc = Object.getOwnPropertyDescriptor(object, property); if (desc === undefined) { var parent = Object.getPrototypeOf(object); if (parent === null) { return undefined; } else { return get(parent, property, receiver); } } else if ("value" in desc) { return desc.value; } else { var getter = desc.get; if (getter === undefined) { return undefined; } return getter.call(receiver); } };
+
 function _classCallCheck(instance, Constructor) { if (!(instance instanceof Constructor)) { throw new TypeError("Cannot call a class as a function"); } }
 
 function _possibleConstructorReturn(self, call) { if (!self) { throw new ReferenceError("this hasn't been initialised - super() hasn't been called"); } return call && (typeof call === "object" || typeof call === "function") ? call : self; }
@@ -34,9 +36,10 @@ function _inherits(subClass, superClass) { if (typeof superClass !== "function" 
 var _scene = scene;
 var Component = _scene.Component;
 var Container = _scene.Container;
+var Rect = _scene.Rect;
 
-var Tab = function (_Container) {
-  _inherits(Tab, _Container);
+var Tab = function (_Rect) {
+  _inherits(Tab, _Rect);
 
   function Tab() {
     _classCallCheck(this, Tab);
@@ -47,11 +50,49 @@ var Tab = function (_Container) {
   _createClass(Tab, [{
     key: '_draw',
     value: function _draw(context) {
-      var tabIndex = this.model.tabIndex;
+
+      _get(Object.getPrototypeOf(Tab.prototype), '_draw', this).call(this, context);
+
+      var _model = this.model;
+      var tabIndex = _model.tabIndex;
+      var left = _model.left;
+      var top = _model.top;
+      var width = _model.width;
+      var height = _model.height;
+      var fillStyle = _model.fillStyle;
+      var strokeStyle = _model.strokeStyle;
+      var lineWidth = _model.lineWidth;
+
+
+      var reference = this.reference;
+
+      if (reference) {
+        var components = reference.components;
+        var label_height = this.labelHeight;
+
+        for (var i = 0; i < components.length; i++) {
+
+          context.beginPath();
+
+          context.rect(left, top + i * label_height, width, label_height);
+
+          context.lineWidth = lineWidth;
+          context.strokeStyle = strokeStyle;
+          context.fillStyle = fillStyle;
+
+          context.stroke();
+          context.fill();
+
+          context.closePath();
+        }
+      } else {
+        // TODO reference 가 잘못되거나 안되어있다는 경고 의미로 뭔가 그려라..
+      }
     }
   }, {
     key: 'onmouseup',
     value: function onmouseup(e) {
+
       var down_point = this.__down_point;
       delete this.__down_point;
 
@@ -61,36 +102,20 @@ var Tab = function (_Container) {
 
       var point = this.transcoordC2S(e.offsetX, e.offsetY);
 
-      var _model = this.model;
-      var left = _model.left;
-      var top = _model.top;
+      var _model2 = this.model;
+      var left = _model2.left;
+      var top = _model2.top;
 
 
       var x = point.x - left;
       var y = point.y - top;
 
-      if (x > 0) return;
+      var label_height = this.labelHeight;
 
-      y /= LABEL_HEIGHT;
+      y /= label_height;
       y = Math.floor(y);
 
-      if (!this.layoutConfig) this.layoutConfig = {};
-
-      if (y > this.components.length) return;
-
-      /* 생성 버튼이 클릭되면, 새로운 floor를 추가한다. */
-      if (y == this.components.length) {
-        this.add(Model.compile({
-          type: 'floor',
-          width: 100,
-          height: 100
-        }));
-      }
-
-      var config = Object.assign({}, this.layoutConfig);
-
-      config.activeIndex = y;
-      this.set('layoutConfig', config);
+      this.activeIndex = y;
     }
   }, {
     key: 'onmousedown',
@@ -100,10 +125,37 @@ var Tab = function (_Container) {
         y: e.offsetY
       };
     }
+  }, {
+    key: 'reference',
+    get: function get() {
+      var reference = this.model.reference;
+
+      if (!reference) return null;
+
+      return this.root.findById(reference);
+    }
+  }, {
+    key: 'labelHeight',
+    get: function get() {
+      var components = this.reference.components.length;
+      var height = this.model.height;
+
+      return components > 0 && height / components || height;
+    }
+  }, {
+    key: 'activeIndex',
+    get: function get() {
+      return this.get('activeIndex');
+    },
+    set: function set(index) {
+
+      this.set('activeIndex', index);
+      if (this.reference) this.reference.activeIndex = index;
+    }
   }]);
 
   return Tab;
-}(Container);
+}(Rect);
 
 exports.default = Tab;
 
