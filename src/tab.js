@@ -23,15 +23,16 @@ export default class Tab extends Rect {
 
   set activeIndex(index) {
 
-
     this.set('activeIndex', index)
-    if(this.reference)
+    if(this.reference) {
       this.reference.activeIndex = index
+    }
+
   }
 
-  _draw(context) {
+  _post_draw(context) {
 
-    super._draw(context)
+    super._post_draw(context)
 
     var {
       tabIndex,
@@ -47,6 +48,9 @@ export default class Tab extends Rect {
     var reference = this.reference
 
     if(reference) {
+      if(!this.activeIndex)
+        this.activeIndex = 0
+
       let components = reference.components
       let label_height = this.labelHeight
 
@@ -59,7 +63,11 @@ export default class Tab extends Rect {
 
         context.lineWidth = lineWidth
         context.strokeStyle = strokeStyle
-        context.fillStyle = fillStyle
+
+        if(this.activeIndex == i)
+          context.fillStyle = 'yellow'
+        else
+          context.fillStyle = fillStyle
 
         context.stroke()
         context.fill()

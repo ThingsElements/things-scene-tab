@@ -48,10 +48,10 @@ var Tab = function (_Rect) {
   }
 
   _createClass(Tab, [{
-    key: '_draw',
-    value: function _draw(context) {
+    key: '_post_draw',
+    value: function _post_draw(context) {
 
-      _get(Object.getPrototypeOf(Tab.prototype), '_draw', this).call(this, context);
+      _get(Object.getPrototypeOf(Tab.prototype), '_post_draw', this).call(this, context);
 
       var _model = this.model;
       var tabIndex = _model.tabIndex;
@@ -67,6 +67,8 @@ var Tab = function (_Rect) {
       var reference = this.reference;
 
       if (reference) {
+        if (!this.activeIndex) this.activeIndex = 0;
+
         var components = reference.components;
         var label_height = this.labelHeight;
 
@@ -78,7 +80,8 @@ var Tab = function (_Rect) {
 
           context.lineWidth = lineWidth;
           context.strokeStyle = strokeStyle;
-          context.fillStyle = fillStyle;
+
+          if (this.activeIndex == i) context.fillStyle = 'yellow';else context.fillStyle = fillStyle;
 
           context.stroke();
           context.fill();
@@ -150,7 +153,9 @@ var Tab = function (_Rect) {
     set: function set(index) {
 
       this.set('activeIndex', index);
-      if (this.reference) this.reference.activeIndex = index;
+      if (this.reference) {
+        this.reference.activeIndex = index;
+      }
     }
   }]);
 
@@ -162,4 +167,4 @@ exports.default = Tab;
 
 Component.register('tab', Tab);
 
-},{}]},{},[1,2]);
+},{}]},{},[1]);
