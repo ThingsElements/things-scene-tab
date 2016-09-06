@@ -184,18 +184,16 @@ export default class Tab extends Container {
       }
 
       for(let i = 0;i < components.length;i++) {
-        // this.components.push({
-        //   target: 'rect',
-        //   text: String(i+1),
-        //   fillStyle: '#ffffff'
-        // })
+        if(components[i].model.type != 'floor')
+          continue;
+
         children.push({
           index: i,
-          text: String(i+1),
-          fillStyle: fillStyle || 'navy',
-          activeFillStyle: activeFillStyle || 'red',
-          fontColor: fontColor || 'white',
-          strokeStyle: strokeStyle || 'red',
+          text: components[i].model.text || String(i+1),
+          fillStyle: fillStyle,
+          activeFillStyle: activeFillStyle,
+          fontColor: fontColor,
+          strokeStyle: strokeStyle,
           margin: {
             top: 5,
             left: 5,
