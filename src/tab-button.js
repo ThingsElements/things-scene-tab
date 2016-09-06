@@ -30,21 +30,10 @@ export default class TabButton extends Rect {
     super._post_draw(context)
   }
 
-  onmouseup(e) {
+  onclick(e) {
     this.parent.activeIndex = this.index
     this.parent.invalidate()
   }
-
-  onmousedown(e) {
-    e.stopPropagation()
-
-
-  }
-
-  ondblclick(e) {
-    e.stopPropagation()
-  }
-
 }
 
 Component.register('tab-button', TabButton)

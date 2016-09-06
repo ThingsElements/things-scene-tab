@@ -196,7 +196,12 @@ export default class Tab extends Container {
           activeFillStyle: activeFillStyle || 'red',
           fontColor: fontColor || 'white',
           strokeStyle: strokeStyle || 'red',
-          lineWidth: lineWidth,
+          margin: {
+            top: 5,
+            left: 5,
+            right: 5,
+            bottom: 5
+          },
           left: 0,
           top: 0,
           width: width,
