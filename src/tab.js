@@ -179,7 +179,9 @@ export default class Tab extends Container {
       let components = reference.components
       let label_height = this.labelHeight
 
-      for(let i in this.components) {
+      let componentsLength = this.components.length
+
+      for(var i=componentsLength-1; i>=0; i--) {
         this.removeComponent(this.components[i])
       }
 
