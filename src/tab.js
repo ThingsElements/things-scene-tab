@@ -172,46 +172,68 @@ export default class Tab extends Container {
 
     var reference = this.reference
 
-    if(reference && reference.components.length !== this.components.length) {
-      if(!this.activeIndex)
-        this.activeIndex = 0
+    var isRefCompChanged = false;
 
-      let components = reference.components
-      let label_height = this.labelHeight
+    this._refComponents = this._refComponents || []
 
-      let componentsLength = this.components.length
-
-      for(var i=componentsLength-1; i>=0; i--) {
-        this.removeComponent(this.components[i])
+    if(reference) {
+      if(this._refComponents.length !== this.reference.components.length) {
+        isRefCompChanged = true;
+      } else {
+        for(let i in this.reference.components) {
+          if( this._refComponents[i] != this.reference.components[i].serialize() ) {
+            isRefCompChanged = true;
+            break;
+          }
+        }
       }
 
-      for(let i = 0;i < components.length;i++) {
-        if(components[i].model.type != 'floor')
-          continue;
+      if(isRefCompChanged) {
+        this._refComponents = []
 
-        children.push({
-          index: i,
-          text: components[i].model.text || String(i+1),
-          fillStyle: fillStyle,
-          activeFillStyle: activeFillStyle,
-          fontColor: fontColor,
-          strokeStyle: strokeStyle,
-          margin: {
-            top: 5,
-            left: 5,
-            right: 5,
-            bottom: 5
-          },
-          left: 0,
-          top: 0,
-          width: width,
-          height: height
-        })
+        if(!this.activeIndex)
+          this.activeIndex = 0
+
+        let components = reference.components
+        let label_height = this.labelHeight
+
+        let componentsLength = this.components.length
+
+        for(var i=componentsLength-1; i>=0; i--) {
+          this.removeComponent(this.components[i])
+        }
+
+        for(let i = 0;i < components.length;i++) {
+          if(components[i].model.type != 'floor')
+            continue;
+
+          this._refComponents.push(components[i].serialize());
+
+          children.push({
+            index: i,
+            text: components[i].model.text || String(i+1),
+            fillStyle: fillStyle,
+            activeFillStyle: activeFillStyle,
+            fontColor: fontColor,
+            strokeStyle: strokeStyle,
+            margin: {
+              top: 5,
+              left: 5,
+              right: 5,
+              bottom: 5
+            },
+            left: 0,
+            top: 0,
+            width: width,
+            height: height
+          })
+        }
+
+        for(let i in children) {
+          this.add(new TabButton(children[i], this.app))
+        }
       }
 
-      for(let i in children) {
-        this.add(new TabButton(children[i], this.app))
-      }
     }
   }
 
