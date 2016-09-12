@@ -1,4 +1,4 @@
-var { Component, Container, Rect, LinearHorizontalLayout, LinearVerticalLayout } = scene
+var { Component, Container, Rect, LinearHorizontalLayout, LinearVerticalLayout, Model } = scene
 
 import TabButton from './tab-button'
 
@@ -49,111 +49,9 @@ export default class Tab extends Container {
 
   }
 
-  // _pre_draw(context) {
-  //
-  //   super._pre_draw(context)
-  //
-  //   var {
-  //     tabIndex,
-  //     left,
-  //     top,
-  //     width,
-  //     height,
-  //     fillStyle,
-  //     strokeStyle,
-  //     lineWidth
-  //   } = this.model
-  //
-  //   let children = []
-  //
-  //   var reference = this.reference
-  //
-  //   if(reference && reference.components.length !== this.components.length) {
-  //     if(!this.activeIndex)
-  //       this.activeIndex = 0
-  //
-  //     let components = reference.components
-  //     let label_height = this.labelHeight
-  //
-  //     for(let i in this.components) {
-  //       this.removeComponent(this.components[i])
-  //     }
-  //
-  //     for(let i = 0;i < components.length;i++) {
-  //       // this.components.push({
-  //       //   target: 'rect',
-  //       //   text: String(i+1),
-  //       //   fillStyle: '#ffffff'
-  //       // })
-  //       children.push({
-  //         type: 'rect',
-  //         text: String(i+1),
-  //         fillStyle: 'navy',
-  //         fontColor: 'white',
-  //         left: 0,
-  //         top: 0,
-  //         width: width,
-  //         height: height
-  //       })
-  //     }
-  //
-  //     for(let i in children) {
-  //       this.add(new Rect(children[i], this.app))
-  //     }
-  //   }
-  // }
-
   _post_draw(context) {
 
     super._post_draw(context)
-
-    // var {
-    //   tabIndex,
-    //   left,
-    //   top,
-    //   width,
-    //   height,
-    //   fillStyle,
-    //   strokeStyle,
-    //   lineWidth
-    // } = this.model
-    //
-    // let children = this.hierarchy.components
-    //
-    // var reference = this.reference
-    //
-    // if(reference) {
-    //   if(!this.activeIndex)
-    //     this.activeIndex = 0
-    //
-    //   let components = reference.components
-    //   let label_height = this.labelHeight
-    //
-    //   for(let i = 0;i < components.length;i++) {
-    //
-    //
-    //
-    //     context.beginPath();
-    //
-    //     context.rect(left, top + i * label_height,
-    //       width, label_height)
-    //
-    //     context.lineWidth = lineWidth
-    //     context.strokeStyle = strokeStyle
-    //
-    //     if(this.activeIndex == i)
-    //       context.fillStyle = 'yellow'
-    //     else
-    //       context.fillStyle = fillStyle
-    //
-    //     context.stroke()
-    //     context.fill()
-    //
-    //     context.closePath();
-    //   }
-    // } else {
-    //   // TODO reference 가 잘못되거나 안되어있다는 경고 의미로 뭔가 그려라..
-    // }
 
     var {
       tabIndex,
@@ -210,6 +108,7 @@ export default class Tab extends Container {
           this._refComponents.push(components[i].serialize());
 
           children.push({
+            type: 'tab-button',
             index: i,
             text: components[i].model.text || String(i+1),
             fillStyle: fillStyle,
@@ -230,10 +129,12 @@ export default class Tab extends Container {
         }
 
         for(let i in children) {
-          this.add(new TabButton(children[i], this.app))
+          this.addComponent(Model.compile(children[i]))
         }
       }
 
+    } else {
+      // TODO reference 가 잘못되거나 안되어있다는 경고 의미로 뭔가 그려라..
     }
   }
 
