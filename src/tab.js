@@ -1,5 +1,25 @@
 var { Component, Container, Rect, LinearHorizontalLayout, LinearVerticalLayout, Model } = scene
 
+const NATURE = {
+  mutable: false,
+  resizable: true,
+  rotatable: true,
+  properties : [{
+    type: 'string',
+    label: 'tab-reference',
+    name: 'reference',
+    property: 'reference'
+  }, {
+    type: 'number',
+    label: 'tab-active-index',
+    name: 'activeIndex',
+    property: {
+      min: 0,
+      step: 1
+    }
+  }]
+}
+
 import TabButton from './tab-button'
 
 export default class Tab extends Container {
@@ -15,6 +35,10 @@ export default class Tab extends Container {
     } else {
       return LinearVerticalLayout
     }
+  }
+
+  get nature() {
+    return NATURE
   }
 
   get reference() {
