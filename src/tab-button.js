@@ -1,6 +1,6 @@
-var { Component, Container, Rect, LinearHorizontalLayout, LinearVerticalLayout } = scene
+var { Component, Container, RectPath, LinearHorizontalLayout, LinearVerticalLayout } = scene
 
-export default class TabButton extends Rect {
+export default class TabButton extends RectPath(Component) {
 
 
   get index() {
@@ -12,6 +12,7 @@ export default class TabButton extends Rect {
   }
 
   _pre_draw(context) {
+    super._pre_draw(context)
     let {
       fillStyle,
       activeFillStyle
@@ -26,8 +27,21 @@ export default class TabButton extends Rect {
     }
   }
 
-  _post_draw(context) {
-    super._post_draw(context)
+  _draw(context) {
+    var {
+      left = 0,
+      top = 0,
+      width,
+      height
+    } = this.bounds;
+
+    // 컨테이너의 바운드를 표현한다.(컨테이너의 기본 그리기 기능)
+    context.beginPath();
+
+    context.rect(left, top, width, height);
+
+    this.drawFill(context)
+    this.drawStroke(context)
   }
 
   onclick(e) {

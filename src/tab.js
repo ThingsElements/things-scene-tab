@@ -73,9 +73,9 @@ export default class Tab extends Container {
 
   }
 
-  _post_draw(context) {
+  _draw(context) {
 
-    super._post_draw(context)
+    super._draw(context)
 
     var {
       tabIndex,
