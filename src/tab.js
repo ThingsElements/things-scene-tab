@@ -41,6 +41,11 @@ export default class Tab extends Container {
     return NATURE
   }
 
+  // 컴포넌트를 임의로 추가 및 삭제할 수 있는 지를 지정하는 속성임.
+  get focusible() {
+    return false
+  }
+
   get reference() {
     var { reference } = this.model
     if(!reference)
