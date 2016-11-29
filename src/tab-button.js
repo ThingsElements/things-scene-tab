@@ -59,6 +59,16 @@ export default class TabButton extends RectPath(Component) {
     this.drawStroke(context)
   }
 
+  _post_draw(context) {
+    super._post_draw(context)
+
+    this.model.fillStyle = this._fillStyle
+    this.model.fontColor = this._fontColor
+
+    delete this._fillStyle
+    delete this._fontColor
+  }
+
   onclick(e) {
     this.parent.activeIndex = this.index
     this.parent.invalidate()
