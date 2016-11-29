@@ -159,6 +159,11 @@ export default class Tab extends Container {
       strokeStyle,
       fontColor,
       activeFontColor,
+      fontFamily,
+      fontSize,
+      lineHeight,
+      italic,
+      bold,
       lineWidth = 0
     } = this.model
 
@@ -205,6 +210,11 @@ export default class Tab extends Container {
           activeFillStyle: activeFillStyle,
           fontColor: fontColor,
           activeFontColor: activeFontColor || fontColor,
+          fontFamily: fontFamily,
+          fontSize: fontSize,
+          lineHeight: lineHeight,
+          italic: italic,
+          bold: bold,
           strokeStyle: strokeStyle,
           lineWidth: lineWidth,
           left: 0,
@@ -229,6 +239,11 @@ export default class Tab extends Container {
       activeFontColor,
       strokeStyle,
       lineWidth = 0,
+      fontFamily,
+      fontSize,
+      lineHeight,
+      italic,
+      bold
     } = this.model
 
     var children = this.components
@@ -241,7 +256,12 @@ export default class Tab extends Container {
         fontColor: fontColor,
         activeFontColor: activeFontColor,
         strokeStyle: strokeStyle,
-        lineWidth: lineWidth
+        lineWidth: lineWidth,
+        fontFamily: fontFamily,
+        fontSize: fontSize,
+        lineHeight: lineHeight,
+        italic: italic,
+        bold: bold
       })
     }
   }
@@ -256,7 +276,12 @@ export default class Tab extends Container {
       || after.hasOwnProperty("fillStyle")
       || after.hasOwnProperty("fontColor")
       || after.hasOwnProperty("strokeStyle")
-      || after.hasOwnProperty("lineWidth")) {
+      || after.hasOwnProperty("lineWidth")
+      || after.hasOwnProperty("fontFamily")
+      || after.hasOwnProperty("fontSize")
+      || after.hasOwnProperty("lineHeight")
+      || after.hasOwnProperty("italic")
+      || after.hasOwnProperty("bold")) {
       this.setTabButtonsStyle()
     }
 
