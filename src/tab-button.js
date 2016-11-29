@@ -13,6 +13,10 @@ export default class TabButton extends RectPath(Component) {
     return this.parent.activeIndex === this.index
   }
 
+  removed(parent) {
+    this.dispose()
+  }
+
   _pre_draw(context) {
     super._pre_draw(context)
     let {
@@ -22,10 +26,10 @@ export default class TabButton extends RectPath(Component) {
       activeFontColor
     } = this.model
 
-    if(!this._fillStyle) {
+    if(this._fillStyle == undefined ) {
       this._fillStyle = fillStyle
     }
-    if(!this._fontColor) {
+    if(this._fontColor == undefined) {
       this._fontColor = fontColor
     }
 
@@ -62,10 +66,10 @@ export default class TabButton extends RectPath(Component) {
 
   onchange(after) {
     if(after.hasOwnProperty("fillStyle"))
-      this._fillStyle = after.fillStyle || 'transparent'
+      this._fillStyle = after.fillStyle
 
     if(after.hasOwnProperty("fontColor"))
-      this._fontColor = after.fontColor || 'transparent'
+      this._fontColor = after.fontColor
 
     this.invalidate()
   }

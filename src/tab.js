@@ -68,7 +68,13 @@ export default class Tab extends Container {
     if(!reference)
       return null
 
-    return this.root.findById(reference)
+    if(!this._reference) {
+      this._reference = this.root.findById(reference)
+      if(this._reference)
+        this._reference.on('change', this.onRefChanged, this)
+    }
+
+    return this._reference
   }
 
   get labelHeight() {
@@ -83,6 +89,10 @@ export default class Tab extends Container {
   }
 
   set reference(reference) {
+    if(this.reference)
+      this.reference.off('change', this.onRefChanged, this)
+
+    this._reference = null
     this.model.reference = reference
   }
 
@@ -99,12 +109,16 @@ export default class Tab extends Container {
 
     super._draw(context)
 
-    this._refComponents = this._refComponents || []
-
     if(this.reference) {
-      this.rebuildTabButtons(context)
+      if(this.size() !== this.reference.size())
+        this.rebuildTabButtons(context)
     } else {
       // TODO reference 가 잘못되거나 안되어있다는 경고 의미로 뭔가 그려라..
+      var componentsLength = this.components.length;
+      for(var i = componentsLength - 1 ; i >= 0; i-- ) {
+        var tabBtn = this.components[i]
+        this.removeComponent(tabBtn)
+      }
     }
   }
 
@@ -147,6 +161,13 @@ export default class Tab extends Container {
       && y < Math.max(top + h, top) && y > Math.min(top + h, top));
   }
 
+  dispose() {
+    if(this.reference)
+      this.reference.off('change', this.onRefChanged, this)
+
+    super.dispose()
+  }
+
   rebuildTabButtons() {
     var {
       tabIndex = 0,
@@ -167,125 +188,115 @@ export default class Tab extends Container {
       lineWidth = 0
     } = this.model
 
-    var isRefCompChanged = false;
     var reference = this.reference
     let children = []
-    if(this._refComponents.length !== this.reference.components.length) {
-      isRefCompChanged = true;
-    } else {
-      for(let i in this.reference.components) {
-        if( this._refComponents[i] != this.reference.components[i].serialize() ) {
-          isRefCompChanged = true;
-          break;
-        }
-      }
+
+    let components = reference.components
+    let label_height = this.labelHeight
+
+    let componentsLength = this.components.length
+
+    for(var i=componentsLength-1; i>=0; i--) {
+      this.removeComponent(this.components[i])
     }
 
-    if(isRefCompChanged) {
-      this._refComponents = []
+    for(let i = 0;i < components.length;i++) {
+      if(components[i].model.type != 'floor')
+        continue;
 
-      if(!this.activeIndex)
-        this.activeIndex = 0
-
-      let components = reference.components
-      let label_height = this.labelHeight
-
-      let componentsLength = this.components.length
-
-      for(var i=componentsLength-1; i>=0; i--) {
-        this.removeComponent(this.components[i])
-      }
-
-      for(let i = 0;i < components.length;i++) {
-        if(components[i].model.type != 'floor')
-          continue;
-
-        this._refComponents.push(components[i].serialize());
-
-        children.push(Model.compile({
-          type: 'tab-button',
-          index: i,
-          text: components[i].model.text || String(i+1),
-          fillStyle: fillStyle || 'transparent',
-          activeFillStyle: activeFillStyle,
-          fontColor: fontColor,
-          activeFontColor: activeFontColor || fontColor,
-          fontFamily: fontFamily,
-          fontSize: fontSize,
-          lineHeight: lineHeight,
-          italic: italic,
-          bold: bold,
-          strokeStyle: strokeStyle,
-          lineWidth: lineWidth,
-          left: 0,
-          top: 0,
-          width: width,
-          height: height
-        }))
-      }
-
-      this.add(children)
-
+      children.push(Model.compile({
+        type: 'tab-button',
+        index: i,
+        text: String(i+1),
+        fillStyle: fillStyle || 'transparent',
+        activeFillStyle: activeFillStyle,
+        fontColor: fontColor,
+        activeFontColor: activeFontColor || fontColor,
+        fontFamily: fontFamily,
+        fontSize: fontSize,
+        lineHeight: lineHeight,
+        italic: italic,
+        bold: bold,
+        strokeStyle: strokeStyle,
+        lineWidth: lineWidth,
+        left: 0,
+        top: 0,
+        width: width,
+        height: height
+      }))
     }
+
+    this.add(children)
 
     this.reflow()
+
+    this.activeIndex = this.model.activeIndex || 0
   }
 
-  setTabButtonsStyle() {
-    var {
-      fillStyle,
-      activeFillStyle,
-      fontColor,
-      activeFontColor,
-      strokeStyle,
-      lineWidth = 0,
-      fontFamily,
-      fontSize,
-      lineHeight,
-      italic,
-      bold
-    } = this.model
+  setTabButtonsStyle(style) {
+    // var {
+    //   fillStyle,
+    //   activeFillStyle,
+    //   fontColor,
+    //   activeFontColor,
+    //   strokeStyle,
+    //   lineWidth = 0,
+    //   fontFamily,
+    //   fontSize,
+    //   lineHeight,
+    //   italic,
+    //   bold
+    // } = style
 
     var children = this.components
 
     for (var i in children) {
       var tabBtn = children[i];
-      tabBtn.set({
-        fillStyle: fillStyle,
-        activeFillStyle: activeFillStyle,
-        fontColor: fontColor,
-        activeFontColor: activeFontColor,
-        strokeStyle: strokeStyle,
-        lineWidth: lineWidth,
-        fontFamily: fontFamily,
-        fontSize: fontSize,
-        lineHeight: lineHeight,
-        italic: italic,
-        bold: bold
-      })
+      tabBtn.set(style)
+      // tabBtn.set({
+      //   fillStyle: fillStyle,
+      //   activeFillStyle: activeFillStyle,
+      //   fontColor: fontColor,
+      //   activeFontColor: activeFontColor,
+      //   strokeStyle: strokeStyle,
+      //   lineWidth: lineWidth,
+      //   fontFamily: fontFamily,
+      //   fontSize: fontSize,
+      //   lineHeight: lineHeight,
+      //   italic: italic,
+      //   bold: bold
+      // })
     }
+  }
+
+  onRefChanged(after, before, hint) {
+    // let sourceIndex = hint.deliverer.indexOf(hint.origin)
+    // if(this.components[sourceIndex]) {
+    //   this.components[sourceIndex].set(after)
+    //   this.invalidate()
+    // }
   }
 
   onchange(after, before) {
     if(after.hasOwnProperty("reference")){
       this.reference = after.reference
+      this.invalidate()
     }
 
-    if(after.hasOwnProperty("activeFillStyle")
-      || after.hasOwnProperty("activeFontColor")
-      || after.hasOwnProperty("fillStyle")
-      || after.hasOwnProperty("fontColor")
-      || after.hasOwnProperty("strokeStyle")
-      || after.hasOwnProperty("lineWidth")
-      || after.hasOwnProperty("fontFamily")
-      || after.hasOwnProperty("fontSize")
-      || after.hasOwnProperty("lineHeight")
-      || after.hasOwnProperty("italic")
-      || after.hasOwnProperty("bold")) {
-      this.setTabButtonsStyle()
-    }
-
-    this.invalidate()
+    // if(after.hasOwnProperty("activeFillStyle")
+    //   || after.hasOwnProperty("activeFontColor")
+    //   || after.hasOwnProperty("fillStyle")
+    //   || after.hasOwnProperty("fontColor")
+    //   || after.hasOwnProperty("strokeStyle")
+    //   || after.hasOwnProperty("lineWidth")
+    //   || after.hasOwnProperty("fontFamily")
+    //   || after.hasOwnProperty("fontSize")
+    //   || after.hasOwnProperty("lineHeight")
+    //   || after.hasOwnProperty("italic")
+    //   || after.hasOwnProperty("bold")) {
+    //
+    // }
+    this.setTabButtonsStyle(after)
   }
 
 }
