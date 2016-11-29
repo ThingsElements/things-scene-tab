@@ -59,6 +59,16 @@ export default class TabButton extends RectPath(Component) {
     this.parent.activeIndex = this.index
     this.parent.invalidate()
   }
+
+  onchange(after) {
+    if(after.hasOwnProperty("fillStyle"))
+      this._fillStyle = after.fillStyle || 'transparent'
+
+    if(after.hasOwnProperty("fontColor"))
+      this._fontColor = after.fontColor || 'transparent'
+
+    this.invalidate()
+  }
 }
 
 Component.register('tab-button', TabButton)
