@@ -1,5 +1,12 @@
 var { Component, Container, Rect, LinearHorizontalLayout, LinearVerticalLayout, Model } = scene
 
+const HANDLE_WIDTH = 25
+const HANDLE_HEIGHT = 25
+
+function rgba(r, g, b, a) {
+  return `rgba(${r}, ${g}, ${b}, ${a})`
+}
+
 const NATURE = {
   mutable: false,
   resizable: true,
@@ -17,6 +24,16 @@ const NATURE = {
       min: 0,
       step: 1
     }
+  }, {
+    type: 'color',
+    label: 'activeFillStyle',
+    name: 'activeFillStyle',
+    property: 'activeFillStyle'
+  }, {
+    type: 'color',
+    label: 'activeFontColor',
+    name: 'activeFontColor',
+    property: 'activeFontColor'
   }]
 }
 
@@ -82,8 +99,57 @@ export default class Tab extends Container {
 
     super._draw(context)
 
+    this._refComponents = this._refComponents || []
+
+    if(this.reference) {
+      this.rebuildTabButtons(context)
+    } else {
+      // TODO reference 가 잘못되거나 안되어있다는 경고 의미로 뭔가 그려라..
+    }
+  }
+
+  _post_draw(context) {
+    super._post_draw(context)
+
+    if(!this.app.isEditMode)
+      return
+
+    var { left, top, width, fillStyle } = this.model
+
+
+    // 이동 핸들 그리기
+    context.beginPath();
+
+    context.rect(left + width, top, HANDLE_WIDTH, HANDLE_HEIGHT)
+
+    let color = 255 - 20 % 255
+    context.fillStyle = rgba(color, color, color, 1)
+    context.fill()
+
+    context.closePath();
+  }
+
+  contains(x, y) {
+
+    if(!this.app.isEditMode)
+      return super.contains(x, y)
+
+    if(super.contains(x, y))
+      return true
+
+    var { left, top, width } = this.bounds;
+
+    var right = left + width;
+
+    var h = HANDLE_HEIGHT
+
+    return (x < Math.max(right + HANDLE_WIDTH, right ) && x > Math.min(right + HANDLE_WIDTH, right)
+      && y < Math.max(top + h, top) && y > Math.min(top + h, top));
+  }
+
+  rebuildTabButtons() {
     var {
-      tabIndex,
+      tabIndex = 0,
       left,
       top,
       width,
@@ -92,87 +158,99 @@ export default class Tab extends Container {
       activeFillStyle,
       strokeStyle,
       fontColor,
+      activeFontColor,
       lineWidth
     } = this.model
 
-    let children = []
-
-    var reference = this.reference
-
     var isRefCompChanged = false;
-
-    this._refComponents = this._refComponents || []
-
-    if(reference) {
-      if(this._refComponents.length !== this.reference.components.length) {
-        isRefCompChanged = true;
-      } else {
-        for(let i in this.reference.components) {
-          if( this._refComponents[i] != this.reference.components[i].serialize() ) {
-            isRefCompChanged = true;
-            break;
-          }
-        }
-      }
-
-      if(isRefCompChanged) {
-        this._refComponents = []
-
-        if(!this.activeIndex)
-          this.activeIndex = 0
-
-        let components = reference.components
-        let label_height = this.labelHeight
-
-        let componentsLength = this.components.length
-
-        for(var i=componentsLength-1; i>=0; i--) {
-          this.removeComponent(this.components[i])
-        }
-
-        for(let i = 0;i < components.length;i++) {
-          if(components[i].model.type != 'floor')
-            continue;
-
-          this._refComponents.push(components[i].serialize());
-
-          children.push({
-            type: 'tab-button',
-            index: i,
-            text: components[i].model.text || String(i+1),
-            fillStyle: fillStyle,
-            activeFillStyle: activeFillStyle,
-            fontColor: fontColor,
-            strokeStyle: strokeStyle,
-            margin: {
-              top: 5,
-              left: 5,
-              right: 5,
-              bottom: 5
-            },
-            left: 0,
-            top: 0,
-            width: width,
-            height: height
-          })
-        }
-
-        for(let i in children) {
-          this.addComponent(Model.compile(children[i]))
-        }
-      }
-
+    var reference = this.reference
+    let children = []
+    if(this._refComponents.length !== this.reference.components.length) {
+      isRefCompChanged = true;
     } else {
-      // TODO reference 가 잘못되거나 안되어있다는 경고 의미로 뭔가 그려라..
+      for(let i in this.reference.components) {
+        if( this._refComponents[i] != this.reference.components[i].serialize() ) {
+          isRefCompChanged = true;
+          break;
+        }
+      }
+    }
+
+    if(isRefCompChanged) {
+      this._refComponents = []
+
+      if(!this.activeIndex)
+        this.activeIndex = 0
+
+      let components = reference.components
+      let label_height = this.labelHeight
+
+      let componentsLength = this.components.length
+
+      for(var i=componentsLength-1; i>=0; i--) {
+        this.removeComponent(this.components[i])
+      }
+
+      for(let i = 0;i < components.length;i++) {
+        if(components[i].model.type != 'floor')
+          continue;
+
+        this._refComponents.push(components[i].serialize());
+
+        children.push(Model.compile({
+          type: 'tab-button',
+          index: i,
+          text: components[i].model.text || String(i+1),
+          fillStyle: fillStyle || 'transparent',
+          activeFillStyle: activeFillStyle,
+          fontColor: fontColor,
+          activeFontColor: activeFontColor || fontColor,
+          strokeStyle: strokeStyle,
+          left: 0,
+          top: 0,
+          width: width,
+          height: height
+        }))
+      }
+
+      this.add(children)
+
+    }
+
+    this.reflow()
+  }
+
+  setTabButtonsStyle() {
+    var {
+      fillStyle,
+      activeFillStyle,
+      fontColor,
+      activeFontColor
+    } = this.model
+
+    var children = this.components
+
+    for (var i in children) {
+      var tabBtn = children[i];
+      tabBtn.set({
+        fillStyle: fillStyle,
+        activeFillStyle: activeFillStyle,
+        fontColor: fontColor,
+        activeFontColor: activeFontColor
+      })
     }
   }
 
   onchange(after, before) {
     if(after.hasOwnProperty("reference")){
       this.reference = after.reference
-      // if(this.reference) {
-      //   this.activeIndex = this.get('activeIndex') || 0
-      // }
+    }
+
+    if(after.hasOwnProperty("activeFillStyle")
+      || after.hasOwnProperty("activeFontColor")
+      || after.hasOwnProperty("fillStyle")
+      || after.hasOwnProperty("fontColor")) {
+      this.setTabButtonsStyle()
     }
 
     this.invalidate()

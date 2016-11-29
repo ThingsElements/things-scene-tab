@@ -1,5 +1,7 @@
 var { Component, Container, RectPath, LinearHorizontalLayout, LinearVerticalLayout } = scene
 
+
+
 export default class TabButton extends RectPath(Component) {
 
 
@@ -15,15 +17,24 @@ export default class TabButton extends RectPath(Component) {
     super._pre_draw(context)
     let {
       fillStyle,
-      activeFillStyle
+      activeFillStyle,
+      fontColor,
+      activeFontColor
     } = this.model
 
-    if(!this._fillStyle) this._fillStyle = fillStyle
+    if(!this._fillStyle) {
+      this._fillStyle = fillStyle
+    }
+    if(!this._fontColor) {
+      this._fontColor = fontColor
+    }
 
     if(this.activated) {
       this.model.fillStyle = activeFillStyle
+      this.model.fontColor = activeFontColor
     } else {
       this.model.fillStyle = this._fillStyle
+      this.model.fontColor = this._fontColor
     }
   }
 
