@@ -159,7 +159,7 @@ export default class Tab extends Container {
       strokeStyle,
       fontColor,
       activeFontColor,
-      lineWidth
+      lineWidth = 0
     } = this.model
 
     var isRefCompChanged = false;
@@ -206,6 +206,7 @@ export default class Tab extends Container {
           fontColor: fontColor,
           activeFontColor: activeFontColor || fontColor,
           strokeStyle: strokeStyle,
+          lineWidth: lineWidth,
           left: 0,
           top: 0,
           width: width,
@@ -225,7 +226,9 @@ export default class Tab extends Container {
       fillStyle,
       activeFillStyle,
       fontColor,
-      activeFontColor
+      activeFontColor,
+      strokeStyle,
+      lineWidth = 0,
     } = this.model
 
     var children = this.components
@@ -236,7 +239,9 @@ export default class Tab extends Container {
         fillStyle: fillStyle,
         activeFillStyle: activeFillStyle,
         fontColor: fontColor,
-        activeFontColor: activeFontColor
+        activeFontColor: activeFontColor,
+        strokeStyle: strokeStyle,
+        lineWidth: lineWidth
       })
     }
   }
@@ -249,7 +254,9 @@ export default class Tab extends Container {
     if(after.hasOwnProperty("activeFillStyle")
       || after.hasOwnProperty("activeFontColor")
       || after.hasOwnProperty("fillStyle")
-      || after.hasOwnProperty("fontColor")) {
+      || after.hasOwnProperty("fontColor")
+      || after.hasOwnProperty("strokeStyle")
+      || after.hasOwnProperty("lineWidth")) {
       this.setTabButtonsStyle()
     }
 
