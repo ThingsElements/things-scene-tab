@@ -204,10 +204,12 @@ export default class Tab extends Container {
       if(components[i].model.type != 'floor')
         continue;
 
+      let floorText = components[i].text || ""
+
       children.push(Model.compile({
         type: 'tab-button',
         index: i,
-        text: String(i+1),
+        text: floorText || String(i+1),
         fillStyle: fillStyle || 'transparent',
         activeFillStyle: activeFillStyle,
         fontColor: fontColor,
@@ -269,6 +271,7 @@ export default class Tab extends Container {
     }
   }
 
+  // reference가 변했을 때 (tab에 변화를 주기위해)
   onRefChanged(after, before, hint) {
     // let sourceIndex = hint.deliverer.indexOf(hint.origin)
     // if(this.components[sourceIndex]) {
@@ -276,6 +279,7 @@ export default class Tab extends Container {
     //   this.invalidate()
     // }
   }
+
 
   onchange(after, before) {
     if(after.hasOwnProperty("reference")){
@@ -296,7 +300,7 @@ export default class Tab extends Container {
     //   || after.hasOwnProperty("bold")) {
     //
     // }
-    this.setTabButtonsStyle(after)
+    this.setTabButtonsStyle(after);
   }
 
 }

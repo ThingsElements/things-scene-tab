@@ -26,10 +26,11 @@ export default class TabButton extends RectPath(Component) {
       activeFontColor
     } = this.model
 
-    if(this._fillStyle == undefined ) {
+    // backup style
+    if(!this.hasOwnProperty('_fillStyle')) {
       this._fillStyle = fillStyle
     }
-    if(this._fontColor == undefined) {
+    if(!this.hasOwnProperty('_fontColor')) {
       this._fontColor = fontColor
     }
 
@@ -62,6 +63,7 @@ export default class TabButton extends RectPath(Component) {
   _post_draw(context) {
     super._post_draw(context)
 
+    // restore style
     this.model.fillStyle = this._fillStyle
     this.model.fontColor = this._fontColor
 
@@ -80,6 +82,10 @@ export default class TabButton extends RectPath(Component) {
 
     if(after.hasOwnProperty("fontColor"))
       this._fontColor = after.fontColor
+
+      if(after.hasOwnProperty('text')) {
+        this.parent.reference.getAt(this.index).set('text', after.text)
+      }
 
     this.invalidate()
   }
