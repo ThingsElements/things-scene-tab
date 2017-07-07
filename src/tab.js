@@ -1,3 +1,6 @@
+/*
+ * Copyright © HatioLab Inc. All rights reserved.
+ */
 var { Component, Container, Rect, LinearHorizontalLayout, LinearVerticalLayout, Model } = scene
 
 const HANDLE_WIDTH = 25
