@@ -29,12 +29,12 @@ const NATURE = {
     }
   }, {
     type: 'color',
-    label: 'activeFillStyle',
+    label: 'active-fill-style',
     name: 'activeFillStyle',
     property: 'activeFillStyle'
   }, {
     type: 'color',
-    label: 'activeFontColor',
+    label: 'active-font-color',
     name: 'activeFontColor',
     property: 'activeFontColor'
   }]

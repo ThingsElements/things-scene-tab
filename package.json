@@ -1,13 +1,13 @@
 {
   "name": "things-scene-tab",
-  "version": "1.0.0",
+  "version": "2.0.3",
   "description": "An element providing a starting point for your own reusable Polymer elements.",
   "main": "index.js",
   "directories": {
     "test": "test"
   },
   "scripts": {
-    "serve": "watchify src/*.js -o things-scene-tab.js src/index.js & polyserve",
+    "serve": "watchify src/*.js -o things-scene-tab.js src/index.js & polymer serve",
     "build": "browserify src/index.js -o things-scene-tab.js && uglifyjs things-scene-tab.js -m -c -o things-scene-tab-min.js"
   },
   "repository": {
@@ -34,7 +34,7 @@
     "chai": "^3.4.1",
     "mocha": "^2.3.4",
     "should": "^8.0.2",
-    "uglifyjs": "^2.4.10",
+    "uglify-js": "^3.1.1",
     "watchify": "^3.3.1"
   },
   "dependencies": {}
