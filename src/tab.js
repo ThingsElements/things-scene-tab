@@ -37,6 +37,16 @@ const NATURE = {
     label: 'active-font-color',
     name: 'activeFontColor',
     property: 'activeFontColor'
+  }, {
+    type: 'color',
+    label: 'active-line-color',
+    name: 'activeLineColor',
+    property: 'activeLineColor'
+  }, {
+    type: 'number',
+    label: 'active-line-width',
+    name: 'activeLineWidth',
+    property: 'activeLineWidth'
   }]
 }
 
@@ -180,6 +190,8 @@ export default class Tab extends Container {
       height,
       fillStyle,
       activeFillStyle,
+      activeLineColor,
+      activeLineWidth,
       strokeStyle,
       fontColor,
       activeFontColor,
@@ -215,6 +227,8 @@ export default class Tab extends Container {
         text: floorText || String(i+1),
         fillStyle: fillStyle || 'transparent',
         activeFillStyle: activeFillStyle,
+        activeLineColor: activeLineColor,
+        activeLineWidth: activeLineWidth,
         fontColor: fontColor,
         activeFontColor: activeFontColor || fontColor,
         fontFamily: fontFamily,

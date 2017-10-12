@@ -25,6 +25,8 @@ export default class TabButton extends RectPath(Component) {
     let {
       fillStyle,
       activeFillStyle,
+      activeLineColor,
+      activeLineWidth,
       fontColor,
       activeFontColor
     } = this.model
@@ -40,9 +42,13 @@ export default class TabButton extends RectPath(Component) {
     if(this.activated) {
       this.model.fillStyle = activeFillStyle
       this.model.fontColor = activeFontColor
+      this.model.strokeStyle = activeLineColor
+      this.model.lineWidth = activeLineWidth
     } else {
       this.model.fillStyle = this._fillStyle
       this.model.fontColor = this._fontColor
+      this.model.strokeStyle = this._strokeStyle
+      this.model.lineWidth = this._lineWidth
     }
   }
 
@@ -69,9 +75,13 @@ export default class TabButton extends RectPath(Component) {
     // restore style
     this.model.fillStyle = this._fillStyle
     this.model.fontColor = this._fontColor
+    this.model.strokeStyle = this._strokeStyle
+    this.model.lineWidth = this._lineWidth
 
     delete this._fillStyle
     delete this._fontColor
+    delete this._strokeStyle
+    delete this._lineWidth
   }
 
   onclick(e) {
@@ -85,7 +95,14 @@ export default class TabButton extends RectPath(Component) {
 
     if(after.hasOwnProperty("fontColor"))
       this._fontColor = after.fontColor
+    
+    if(after.hasOwnProperty("strokeStyle"))
+      this._fontColor = after.fontColor
 
+    if(after.hasOwnProperty("lineWidth"))
+      this._fontColor = after.fontColor
+
+    
       if(after.hasOwnProperty('text')) {
         this.parent.reference.getAt(this.index).set('text', after.text)
       }
