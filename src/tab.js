@@ -1,7 +1,7 @@
 /*
  * Copyright © HatioLab Inc. All rights reserved.
  */
-var { Component, Container, Rect, LinearHorizontalLayout, LinearVerticalLayout, Model } = scene
+import { Component, Container, Rect, LinearHorizontalLayout, LinearVerticalLayout, Model } from '@hatiolab/things-scene'
 
 const HANDLE_WIDTH = 25
 const HANDLE_HEIGHT = 25
@@ -14,7 +14,7 @@ const NATURE = {
   mutable: false,
   resizable: true,
   rotatable: true,
-  properties : [{
+  properties: [{
     type: 'string',
     label: 'tab-reference',
     name: 'reference',
@@ -60,7 +60,7 @@ export default class Tab extends Container {
       height
     } = this.model
 
-    if(width >= height) {
+    if (width >= height) {
       return LinearHorizontalLayout
     } else {
       return LinearVerticalLayout
@@ -78,12 +78,12 @@ export default class Tab extends Container {
 
   get reference() {
     var { reference } = this.model
-    if(!reference)
+    if (!reference)
       return null
 
-    if(!this._reference) {
+    if (!this._reference) {
       this._reference = this.root.findById(reference)
-      if(this._reference)
+      if (this._reference)
         this._reference.on('change', this.onRefChanged, this)
     }
 
@@ -102,7 +102,7 @@ export default class Tab extends Container {
   }
 
   set reference(reference) {
-    if(this.reference)
+    if (this.reference)
       this.reference.off('change', this.onRefChanged, this)
 
     this._reference = null
@@ -112,7 +112,7 @@ export default class Tab extends Container {
   set activeIndex(index) {
 
     this.set('activeIndex', index)
-    if(this.reference) {
+    if (this.reference) {
       this.reference.activeIndex = index
     }
 
@@ -122,13 +122,13 @@ export default class Tab extends Container {
 
     super._draw(context)
 
-    if(this.reference) {
-      if(this.size() !== this.reference.size())
+    if (this.reference) {
+      if (this.size() !== this.reference.size())
         this.rebuildTabButtons(context)
     } else {
       // TODO reference 가 잘못되거나 안되어있다는 경고 의미로 뭔가 그려라..
       var componentsLength = this.components.length;
-      for(var i = componentsLength - 1 ; i >= 0; i-- ) {
+      for (var i = componentsLength - 1; i >= 0; i--) {
         var tabBtn = this.components[i]
         this.removeComponent(tabBtn)
       }
@@ -138,7 +138,7 @@ export default class Tab extends Container {
   _post_draw(context) {
     super._post_draw(context)
 
-    if(!this.app.isEditMode)
+    if (!this.app.isEditMode)
       return
 
     var { left, top, width, fillStyle } = this.model
@@ -158,10 +158,10 @@ export default class Tab extends Container {
 
   contains(x, y) {
 
-    if(!this.app.isEditMode)
+    if (!this.app.isEditMode)
       return super.contains(x, y)
 
-    if(super.contains(x, y))
+    if (super.contains(x, y))
       return true
 
     var { left, top, width } = this.bounds;
@@ -170,12 +170,12 @@ export default class Tab extends Container {
 
     var h = HANDLE_HEIGHT
 
-    return (x < Math.max(right + HANDLE_WIDTH, right ) && x > Math.min(right + HANDLE_WIDTH, right)
+    return (x < Math.max(right + HANDLE_WIDTH, right) && x > Math.min(right + HANDLE_WIDTH, right)
       && y < Math.max(top + h, top) && y > Math.min(top + h, top));
   }
 
   dispose() {
-    if(this.reference)
+    if (this.reference)
       this.reference.off('change', this.onRefChanged, this)
 
     super.dispose()
@@ -211,12 +211,12 @@ export default class Tab extends Container {
 
     let componentsLength = this.components.length
 
-    for(var i=componentsLength-1; i>=0; i--) {
+    for (var i = componentsLength - 1; i >= 0; i--) {
       this.removeComponent(this.components[i])
     }
 
-    for(let i = 0;i < components.length;i++) {
-      if(components[i].model.type != 'floor')
+    for (let i = 0; i < components.length; i++) {
+      if (components[i].model.type != 'floor')
         continue;
 
       let floorText = components[i].text || ""
@@ -224,7 +224,7 @@ export default class Tab extends Container {
       children.push(Model.compile({
         type: 'tab-button',
         index: i,
-        text: floorText || String(i+1),
+        text: floorText || String(i + 1),
         fillStyle: fillStyle || 'transparent',
         activeFillStyle: activeFillStyle,
         activeLineColor: activeLineColor,
@@ -299,7 +299,7 @@ export default class Tab extends Container {
 
 
   onchange(after, before) {
-    if(after.hasOwnProperty("reference")){
+    if (after.hasOwnProperty("reference")) {
       this.reference = after.reference
       this.invalidate()
     }

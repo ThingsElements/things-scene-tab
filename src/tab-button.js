@@ -1,9 +1,7 @@
 /*
  * Copyright © HatioLab Inc. All rights reserved.
  */
-var { Component, Container, RectPath, LinearHorizontalLayout, LinearVerticalLayout } = scene
-
-
+import { Component, Container, RectPath, LinearHorizontalLayout, LinearVerticalLayout } from '@hatiolab/things-scene'
 
 export default class TabButton extends RectPath(Component) {
 
@@ -32,14 +30,14 @@ export default class TabButton extends RectPath(Component) {
     } = this.model
 
     // backup style
-    if(!this.hasOwnProperty('_fillStyle')) {
+    if (!this.hasOwnProperty('_fillStyle')) {
       this._fillStyle = fillStyle
     }
-    if(!this.hasOwnProperty('_fontColor')) {
+    if (!this.hasOwnProperty('_fontColor')) {
       this._fontColor = fontColor
     }
 
-    if(this.activated) {
+    if (this.activated) {
       this.model.fillStyle = activeFillStyle
       this.model.fontColor = activeFontColor
       this.model.strokeStyle = activeLineColor
@@ -90,22 +88,22 @@ export default class TabButton extends RectPath(Component) {
   }
 
   onchange(after) {
-    if(after.hasOwnProperty("fillStyle"))
+    if (after.hasOwnProperty("fillStyle"))
       this._fillStyle = after.fillStyle
 
-    if(after.hasOwnProperty("fontColor"))
-      this._fontColor = after.fontColor
-    
-    if(after.hasOwnProperty("strokeStyle"))
+    if (after.hasOwnProperty("fontColor"))
       this._fontColor = after.fontColor
 
-    if(after.hasOwnProperty("lineWidth"))
+    if (after.hasOwnProperty("strokeStyle"))
       this._fontColor = after.fontColor
 
-    
-      if(after.hasOwnProperty('text')) {
-        this.parent.reference.getAt(this.index).set('text', after.text)
-      }
+    if (after.hasOwnProperty("lineWidth"))
+      this._fontColor = after.fontColor
+
+
+    if (after.hasOwnProperty('text')) {
+      this.parent.reference.getAt(this.index).set('text', after.text)
+    }
 
     this.invalidate()
   }
