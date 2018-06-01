@@ -18,8 +18,8 @@ export default class TabButton extends RectPath(Component) {
     this.dispose()
   }
 
-  _pre_draw(context) {
-    super._pre_draw(context)
+  prerender(context) {
+    super.prerender(context)
     let {
       fillStyle,
       activeFillStyle,
@@ -50,7 +50,7 @@ export default class TabButton extends RectPath(Component) {
     }
   }
 
-  _draw(context) {
+  render(context) {
     var {
       left = 0,
       top = 0,
@@ -67,8 +67,8 @@ export default class TabButton extends RectPath(Component) {
     this.drawStroke(context)
   }
 
-  _post_draw(context) {
-    super._post_draw(context)
+  postrender(context) {
+    super.postrender(context)
 
     // restore style
     this.model.fillStyle = this._fillStyle

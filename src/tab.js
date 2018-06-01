@@ -118,9 +118,9 @@ export default class Tab extends Container {
 
   }
 
-  _draw(context) {
+  render(context) {
 
-    super._draw(context)
+    super.render(context)
 
     if (this.reference) {
       if (this.size() !== this.reference.size())
@@ -135,8 +135,8 @@ export default class Tab extends Container {
     }
   }
 
-  _post_draw(context) {
-    super._post_draw(context)
+  postrender(context) {
+    super.postrender(context)
 
     if (!this.app.isEditMode)
       return
