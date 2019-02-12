@@ -1,6 +1,6 @@
 {
   "name": "@things-scene/tab",
-  "version": "2.3.2",
+  "version": "2.3.3",
   "description": "Tab style container for Things Scene",
   "things-scene": true,
   "main": "src/index.js",
@@ -31,6 +31,6 @@
     "@things-scene/indoor-map": "^2.2.0"
   },
   "dependencies": {
-    "@hatiolab/things-scene": "*"
+    "@hatiolab/things-scene": "^2.5.0-rc"
   }
 }
