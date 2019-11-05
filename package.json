@@ -4,7 +4,6 @@
   "description": "Tab style container for Things Scene",
   "things-scene": true,
   "main": "src/index.js",
-  "module": "dist/things-scene-tab.mjs",
   "jsnext:main": "dist/things-scene-tab.mjs",
   "directories": {
     "test": "test"
